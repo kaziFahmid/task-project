@@ -2,8 +2,10 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import useTasks from '../hooks/useTasks'
 import axios from 'axios'
+import useAuth from '../hooks/useAuth'
 
 export default function Tasks() {
+    const{user}=useAuth()
     const [refetch,tasks]=useTasks()
 
     let handleDelete=(_id)=>{
@@ -17,7 +19,7 @@ export default function Tasks() {
   return (
     <div>
      <div className='text-end'>
-<Link to='/createtask'>  <button className='btn bg-slate-50 mt-3 me-3'>+ Create Task</button></Link>
+<Link to={!user?.email?'/login':'/createtask'}>  <button className='btn bg-slate-50 mt-3 me-3'>+ Create Task</button></Link>
      </div>
 
 
@@ -29,9 +31,11 @@ export default function Tasks() {
     <p><span className='font-bold'>Assigned User</span>: {task.assignedUser}</p>
     <p><span  className='font-bold'>Due-dates</span><span>{task.dueDate}</span></p>
     <div className="card-actions justify-end">
-<Link to={`/update/${task._id}`}><button className="btn btn-primary">Update</button></Link>
-      <button className="btn btn-primary" onClick={()=>handleDelete(task._id)}>Delete</button>
+<Link to={!user?.email?'/login':`/update/${task._id}`}><button className="btn btn-primary">Update</button></Link>
+
+ {!user?.email?     <Link to='/login'><button className="btn btn-primary" >Delete</button></Link>:     <button className="btn btn-primary" onClick={()=>handleDelete(task._id)}>Delete</button>}
     </div>
+
   </div>
 
 </div>})}
